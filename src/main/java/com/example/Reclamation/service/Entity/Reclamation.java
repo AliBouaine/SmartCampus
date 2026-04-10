@@ -1,63 +1,42 @@
 package com.example.Reclamation.service.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "reclamations")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Reclamation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String sujet;
+
+    private String titre;
     private String description;
-    private String status;
 
-    public Reclamation() {
-    }
+    @Column(nullable = false)
+    private String statut = "EN_ATTENTE";
 
-    public Reclamation(Long id, String status, String sujet, String description) {
-        this.id = id;
-        this.status = status;
-        this.sujet = sujet;
-        this.description = description;
-    }
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
-    public Reclamation(String sujet, String description, String status) {
-        this.sujet = sujet;
-        this.description = description;
-        this.status = status;
-    }
+    private String username;
+    private String userEmail;
 
-    public Long getId() {
-        return id;
-    }
+    private String photo;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private LocalDateTime dateCreation;
 
-    public String getSujet() {
-        return sujet;
-    }
-
-    public void setSujet(String sujet) {
-        this.sujet = sujet;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @PrePersist
+    protected void onCreate() {
+        this.dateCreation = LocalDateTime.now();
     }
 }
