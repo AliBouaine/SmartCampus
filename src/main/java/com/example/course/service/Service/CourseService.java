@@ -27,6 +27,11 @@ public class CourseService {
         return repository.findById(id).orElseThrow();
     }
 
+    // ✅ Recherche par titre
+    public List<Course> searchByTitle(String title) {
+        return repository.findByTitleContainingIgnoreCase(title);
+    }
+
     public Course add(Course c) {
         Course saved = repository.save(c);
         CourseDTO dto = new CourseDTO(saved.getId(), saved.getTitle(), saved.getDescription());
