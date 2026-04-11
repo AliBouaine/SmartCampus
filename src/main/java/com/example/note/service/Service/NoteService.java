@@ -28,7 +28,7 @@ public class NoteService {
     public Note update(Long id, Note n) {
         Note old = getById(id);
         if (old != null) {
-            old.setEtudiant(n.getEtudiant());
+            old.setEtudiantId(n.getEtudiantId());
             old.setNote(n.getNote());
             return repo.save(old);
         }
