@@ -1,0 +1,61 @@
+<div class="chatbot-wrapper">
+
+  <!-- Chat window -->
+  <div *ngIf="open" class="chat-window">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="bot-avatar">🤖</div>
+      <div class="header-info">
+        <p class="header-name">Assistant SmartCampus</p>
+        <p class="header-status">● En ligne</p>
+      </div>
+      <button (click)="toggleOpen()" class="close-btn">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" #messagesArea>
+      <div
+        *ngFor="let msg of messages; trackBy: trackByIndex"
+        class="message-row"
+        [class.user-row]="msg.from === 'user'"
+      >
+        <div *ngIf="msg.from === 'bot'" class="msg-avatar">🤖</div>
+        <div
+          class="message-bubble"
+          [class.user-bubble]="msg.from === 'user'"
+          [class.bot-bubble]="msg.from === 'bot'"
+        >{{ msg.text }}</div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div *ngIf="typing" class="message-row typing-row">
+        <div class="msg-avatar">🤖</div>
+        <div class="typing-bubble">
+          <div class="dot" style="animation-delay: 0s"></div>
+          <div class="dot" style="animation-delay: 0.15s"></div>
+          <div class="dot" style="animation-delay: 0.3s"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+      <input
+        [(ngModel)]="input"
+        (keydown)="handleKey($event)"
+        placeholder="Votre message..."
+        class="chat-input"
+      />
+      <button (click)="handleSend()" class="send-btn">➤</button>
+    </div>
+  </div>
+
+  <!-- Toggle button -->
+  <div class="toggle-wrapper">
+    <button (click)="toggleOpen()" class="toggle-btn" [class.open]="open">
+      {{ open ? '✕' : '💬' }}
+    </button>
+  </div>
+
+</div>

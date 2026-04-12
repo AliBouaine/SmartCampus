@@ -1,0 +1,10 @@
+<div class="search-wrapper">
+  <span class="search-icon">🔍</span>
+  <input
+    type="text"
+    [(ngModel)]="query"
+    (ngModelChange)="handleSearch()"
+    placeholder="Rechercher un cours par titre..."
+    class="search-input"
+  />
+</div>

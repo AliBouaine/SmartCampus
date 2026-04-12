@@ -1,0 +1,91 @@
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-icon">📚</span>
+        <h1>SmartCampus</h1>
+      </div>
+      <p class="header-subtitle">Gérez vos cours en toute simplicité</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Add card -->
+    <div class="card add-card">
+      <h2 class="section-label">➕ Nouveau cours</h2>
+      <div class="add-form">
+        <input
+          [(ngModel)]="newTitle"
+          placeholder="Titre du cours"
+          class="form-input"
+        />
+        <input
+          [(ngModel)]="newDesc"
+          placeholder="Description (optionnelle)"
+          class="form-input flex-2"
+        />
+        <button (click)="handleAdd()" class="btn btn-primary">Ajouter</button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <app-search-bar (results)="onSearchResults($event)" />
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-number">{{ courses.length }}</span>
+        <span class="stat-label">cours disponibles</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="empty-state">
+      <span class="empty-icon">⏳</span>
+      <p>Chargement...</p>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && courses.length === 0" class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>Aucun cours trouvé.</p>
+    </div>
+
+    <!-- Course list -->
+    <div *ngIf="!loading && courses.length > 0" class="course-list">
+      <div
+        *ngFor="let c of courses; let i = index"
+        class="course-card"
+        [style.animation-delay]="i * 0.05 + 's'"
+      >
+        <!-- Edit mode -->
+        <div *ngIf="editingId === c.id" class="edit-form">
+          <input [(ngModel)]="editTitle" class="form-input" />
+          <input [(ngModel)]="editDesc" class="form-input flex-2" />
+          <button (click)="handleEditSave(c.id!)" class="btn btn-success">💾 Sauver</button>
+          <button (click)="handleEditCancel()" class="btn btn-gray">✕</button>
+        </div>
+
+        <!-- View mode -->
+        <div *ngIf="editingId !== c.id" class="course-row">
+          <div class="course-info">
+            <div class="course-icon">📖</div>
+            <div>
+              <p class="course-title">{{ c.title }}</p>
+              <p *ngIf="c.description" class="course-desc">{{ c.description }}</p>
+            </div>
+          </div>
+          <div class="course-actions">
+            <button (click)="handleEditOpen(c)" class="btn btn-edit">✏️ Modifier</button>
+            <button (click)="handleDelete(c.id!)" class="btn btn-danger">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
