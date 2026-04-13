@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ================== EUREKA ==================
+  # Décommente cette partie quand tu auras créé une image Docker pour ton Eureka Server
+  # eureka:
+  #   image: fedimbarek/eureka-server:1.0   # change avec ton image réelle
+  #   container_name: eureka
+  #   ports:
+  #     - "8761:8761"
+  #   restart: unless-stopped
+
+  user-service:
+    image: fedimbarek/usermicro:1.0
+    container_name: user-service
+    ports:
+      - "9100:8090"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/usersmicrosrvice
+
+      # Eureka : mets en commentaire les 2 lignes ci-dessous tant que Eureka n'est pas en Docker
+      # EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
+      # EUREKA_CLIENT_REGISTER_WITH_EUREKA: "true"
+      # EUREKA_CLIENT_FETCH_REGISTRY: "true"
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      # eureka:
+      #   condition: service_started
+
+volumes:
+  mongo-data:
